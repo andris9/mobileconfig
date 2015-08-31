@@ -7,7 +7,8 @@ var Handlebars = require('handlebars');
 var uuid = require('uuid');
 
 var templates = {
-    imap: Handlebars.compile(fs.readFileSync(path.join(__dirname, 'templates', 'imap.plist'), 'utf-8'))
+    imap: Handlebars.compile(fs.readFileSync(path.join(__dirname, 'templates', 'imap.plist'), 'utf-8')),
+    carddav: Handlebars.compile(fs.readFileSync(path.join(__dirname, 'templates', 'carddav.plist'), 'utf-8'))
 };
 
 module.exports = {
@@ -62,7 +63,7 @@ module.exports = {
         });
     },
 
-    getEmailConfig: function(options) {
+    getEmailConfig: function(options, callback) {
         var imap = options.imap || {};
         var smtp = options.smtp || {};
 
@@ -98,6 +99,11 @@ module.exports = {
             plistUuid: options.plistUuid || uuid.v4()
         };
 
+        if(callback) {
+            callback(null, templates.imap(data));
+            return;
+        }
+
         return templates.imap(data);
     },
 
@@ -108,6 +114,56 @@ module.exports = {
 
         try {
             plist = module.exports.getEmailConfig(options);
+        } catch (E) {
+            return callback(E);
+        }
+
+        return module.exports.sign(plist, options.keys, callback);
+    },
+
+    getCardDAVConfig: function(options, callback) {
+        var dav = options.dav || {};
+
+        var data = {
+            emailAddress: options.emailAddress || 'admin@localhost',
+
+            organization: options.organization || false,
+            identifier: options.identifier || 'com.kreata.anonymous',
+
+            displayName: options.displayName || 'Mail Account',
+            displayDescription: options.displayDescription,
+
+            accountName: options.accountName || 'CardDAV Account',
+            accountDescription: options.accountDescription || false,
+
+            dav: {
+                hostname: dav.hostname || 'localhost',
+                port: dav.port || (dav.secure ? 443 : 80),
+                principalurl: dav.principalurl || '',
+                secure: dav.hasOwnProperty('secure') ? !!dav.secure : dav.port === 80,
+                username: dav.username || options.emailAddress || 'anonymous',
+                password: dav.password || ''
+            },
+
+            contentUuid: options.contentUuid || uuid.v4(),
+            plistUuid: options.plistUuid || uuid.v4()
+        };
+
+        if(callback) {
+            callback(null, templates.carddav(data));
+            return;
+        }
+
+        return templates.carddav(data);
+    },
+
+    getSignedCardDAVConfig: function(options, callback) {
+        options = options || {};
+
+        var plist;
+
+        try {
+            plist = module.exports.getCardDAVConfig(options);
         } catch (E) {
             return callback(E);
         }

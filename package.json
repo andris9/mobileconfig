@@ -1,6 +1,6 @@
 {
   "name": "mobileconfig",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Create and sign iOS mobileconfig configuration files",
   "main": "index.js",
   "scripts": {

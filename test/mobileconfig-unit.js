@@ -1,21 +1,21 @@
+/* eslint no-unused-vars: 0, no-unused-expressions: 0 */
+/* globals expect: false */
+
 'use strict';
 
-var mobileconfig = require('../index');
-var chai = require('chai');
-var expect = chai.expect;
-var fs = require('fs');
-var plist = require('plist');
+const mobileconfig = require('../index');
+const chai = require('chai');
+const expect = chai.expect;
+const fs = require('fs');
+const plist = require('plist');
 
 chai.Assertion.includeStack = true;
 
-describe('mobileconfig unit tests', function() {
-
-    describe('#sign', function() {
-
-        it('should sign value', function(done) {
-
-            var value = 'Hello ŠŽ 👻';
-            var options = {
+describe('mobileconfig unit tests', () => {
+    describe('#sign', () => {
+        it('should sign value', done => {
+            let value = 'Hello ŠŽ 👻';
+            let options = {
                 key: fs.readFileSync(__dirname + '/fixtures/key.pem'),
                 cert: fs.readFileSync(__dirname + '/fixtures/cert.pem'),
                 hashAlg: 'sha256',
@@ -23,18 +23,16 @@ describe('mobileconfig unit tests', function() {
                 signingTime: false
             };
 
-            mobileconfig.sign(value, options, function(err, data) {
+            mobileconfig.sign(value, options, (err, data) => {
                 expect(err).to.not.exist;
                 expect(data.toString('binary')).to.equal(fs.readFileSync(__dirname + '/fixtures/signed-string.der', 'binary'));
                 done();
             });
-
         });
 
-        it('should return an error', function(done) {
-
-            var value = 'Hello ŠŽ 👻';
-            var options = {
+        it('should return an error', done => {
+            let value = 'Hello ŠŽ 👻';
+            let options = {
                 key: fs.readFileSync(__dirname + '/fixtures/key.pem'),
                 cert: fs.readFileSync(__dirname + '/fixtures/key.pem'),
                 hashAlg: 'sha256',
@@ -42,19 +40,17 @@ describe('mobileconfig unit tests', function() {
                 signingTime: false
             };
 
-            mobileconfig.sign(value, options, function(err, data) {
+            mobileconfig.sign(value, options, (err, data) => {
                 expect(err).to.exist;
                 expect(data).to.not.exist;
                 done();
             });
-
         });
-
     });
 
-    describe('#getEmailConfig', function() {
-        it('should generate valid plist', function() {
-            var options = {
+    describe('#getEmailConfig', () => {
+        it('should generate valid plist', () => {
+            let options = {
                 emailAddress: 'my-email-address@gmail.com',
 
                 organization: 'My Company',
@@ -86,36 +82,38 @@ describe('mobileconfig unit tests', function() {
                 plistUuid: 'ghijklmn'
             };
 
-            var emailConfig = plist.parse(mobileconfig.getEmailConfig(options));
+            let emailConfig = plist.parse(mobileconfig.getEmailConfig(options));
 
             expect(emailConfig).to.deep.equal({
-                PayloadContent: [{
-                    EmailAccountDescription: 'Configure your Gmail account',
-                    EmailAccountType: 'EmailTypeIMAP',
-                    EmailAddress: 'my-email-address@gmail.com',
-                    IncomingMailServerAuthentication: 'EmailAuthPassword',
-                    IncomingMailServerHostName: 'imap.gmail.com',
-                    IncomingMailServerPortNumber: 993,
-                    IncomingMailServerUseSSL: true,
-                    IncomingMailServerUsername: 'my-email-address@gmail.com',
-                    IncomingPassword: 'mypass',
-                    OutgoingMailServerAuthentication: 'EmailAuthPassword',
-                    OutgoingMailServerHostName: 'smtp.gmail.com',
-                    OutgoingMailServerPortNumber: 587,
-                    OutgoingMailServerUseSSL: false,
-                    OutgoingMailServerUsername: 'my-email-address@gmail.com',
-                    OutgoingPasswordSameAsIncomingPassword: true,
-                    PayloadDescription: 'Configures email account.',
-                    PayloadDisplayName: 'IMAP Config',
-                    PayloadIdentifier: 'com.my.company',
-                    PayloadOrganization: 'My Company',
-                    PayloadType: 'com.apple.mail.managed',
-                    PayloadUUID: 'abcdef',
-                    PayloadVersion: 1,
-                    PreventAppSheet: false,
-                    PreventMove: false,
-                    SMIMEEnabled: false
-                }],
+                PayloadContent: [
+                    {
+                        EmailAccountDescription: 'Configure your Gmail account',
+                        EmailAccountType: 'EmailTypeIMAP',
+                        EmailAddress: 'my-email-address@gmail.com',
+                        IncomingMailServerAuthentication: 'EmailAuthPassword',
+                        IncomingMailServerHostName: 'imap.gmail.com',
+                        IncomingMailServerPortNumber: 993,
+                        IncomingMailServerUseSSL: true,
+                        IncomingMailServerUsername: 'my-email-address@gmail.com',
+                        IncomingPassword: 'mypass',
+                        OutgoingMailServerAuthentication: 'EmailAuthPassword',
+                        OutgoingMailServerHostName: 'smtp.gmail.com',
+                        OutgoingMailServerPortNumber: 587,
+                        OutgoingMailServerUseSSL: false,
+                        OutgoingMailServerUsername: 'my-email-address@gmail.com',
+                        OutgoingPasswordSameAsIncomingPassword: true,
+                        PayloadDescription: 'Configures email account.',
+                        PayloadDisplayName: 'IMAP Config',
+                        PayloadIdentifier: 'com.my.company',
+                        PayloadOrganization: 'My Company',
+                        PayloadType: 'com.apple.mail.managed',
+                        PayloadUUID: 'abcdef',
+                        PayloadVersion: 1,
+                        PreventAppSheet: false,
+                        PreventMove: false,
+                        SMIMEEnabled: false
+                    }
+                ],
                 PayloadDescription: 'Install this profile to auto configure your Gmail account',
                 PayloadDisplayName: 'My Gmail Account',
                 PayloadIdentifier: 'com.my.company',
@@ -128,9 +126,9 @@ describe('mobileconfig unit tests', function() {
         });
     });
 
-    describe('#getSignedEmailConfig', function() {
-        it('should not return an error', function(done) {
-            var options = {
+    describe('#getSignedEmailConfig', () => {
+        it('should not return an error', done => {
+            let options = {
                 emailAddress: 'my-email-address@gmail.com',
 
                 organization: 'My Company',
@@ -170,7 +168,7 @@ describe('mobileconfig unit tests', function() {
                 }
             };
 
-            mobileconfig.getSignedEmailConfig(options, function(err, data) {
+            mobileconfig.getSignedEmailConfig(options, (err, data) => {
                 expect(err).to.not.exist;
                 expect(data).to.exist;
 
@@ -179,9 +177,9 @@ describe('mobileconfig unit tests', function() {
         });
     });
 
-    describe('#getCardDAVConfig', function() {
-        it('should generate valid plist', function() {
-            var options = {
+    describe('#getCardDAVConfig', () => {
+        it('should generate valid plist', () => {
+            let options = {
                 organization: 'My Company',
                 identifier: 'com.my.company',
 
@@ -204,25 +202,27 @@ describe('mobileconfig unit tests', function() {
                 plistUuid: 'ghijklmn'
             };
 
-            var emailConfig = plist.parse(mobileconfig.getCardDAVConfig(options));
+            let emailConfig = plist.parse(mobileconfig.getCardDAVConfig(options));
 
             expect(emailConfig).to.deep.equal({
-                PayloadContent: [{
-                    CardDAVAccountDescription: 'Configure your contact list',
-                    CardDAVPrincipalURL: 'http://localhost:8080/dav/username',
-                    CardDAVHostName: 'http://localhost:8080',
-                    CardDAVPort: 8080,
-                    CardDAVUseSSL: false,
-                    CardDAVUsername: 'username@gmail.com',
-                    CardDAVPassword: 'mypass',
-                    PayloadDescription: 'username@gmail.com contacts',
-                    PayloadDisplayName: 'username@gmail.com contacts',
-                    PayloadIdentifier: 'com.my.company',
-                    PayloadOrganization: 'My Company',
-                    PayloadType: 'com.apple.carddav.account',
-                    PayloadUUID: 'abcdef',
-                    PayloadVersion: 1
-                }],
+                PayloadContent: [
+                    {
+                        CardDAVAccountDescription: 'Configure your contact list',
+                        CardDAVPrincipalURL: 'http://localhost:8080/dav/username',
+                        CardDAVHostName: 'http://localhost:8080',
+                        CardDAVPort: 8080,
+                        CardDAVUseSSL: false,
+                        CardDAVUsername: 'username@gmail.com',
+                        CardDAVPassword: 'mypass',
+                        PayloadDescription: 'username@gmail.com contacts',
+                        PayloadDisplayName: 'username@gmail.com contacts',
+                        PayloadIdentifier: 'com.my.company',
+                        PayloadOrganization: 'My Company',
+                        PayloadType: 'com.apple.carddav.account',
+                        PayloadUUID: 'abcdef',
+                        PayloadVersion: 1
+                    }
+                ],
                 PayloadDescription: 'Install this profile to auto configure your contacts',
                 PayloadDisplayName: 'My Contacts',
                 PayloadIdentifier: 'com.my.company',
@@ -235,9 +235,9 @@ describe('mobileconfig unit tests', function() {
         });
     });
 
-    describe('#getSignedEmailConfig', function() {
-        it('should not return an error', function(done) {
-            var options = {
+    describe('#getSignedEmailConfig', () => {
+        it('should not return an error', done => {
+            let options = {
                 emailAddress: 'my-email-address@gmail.com',
 
                 organization: 'My Company',
@@ -277,7 +277,7 @@ describe('mobileconfig unit tests', function() {
                 }
             };
 
-            mobileconfig.getSignedEmailConfig(options, function(err, data) {
+            mobileconfig.getSignedEmailConfig(options, (err, data) => {
                 expect(err).to.not.exist;
                 expect(data).to.exist;
 
@@ -285,5 +285,4 @@ describe('mobileconfig unit tests', function() {
             });
         });
     });
-
 });

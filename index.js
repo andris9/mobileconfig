@@ -1,73 +1,87 @@
 'use strict';
 
-var jsrsasign = require('jsrsasign');
-var fs = require('fs');
-var path = require('path');
-var Handlebars = require('handlebars');
-var uuid = require('uuid');
+const jsrsasign = require('jsrsasign');
+const fs = require('fs');
+const path = require('path');
+const Handlebars = require('handlebars');
+const uuid = require('uuid');
 
-var templates = {
+const templates = {
     imap: Handlebars.compile(fs.readFileSync(path.join(__dirname, 'templates', 'imap.plist'), 'utf-8')),
     carddav: Handlebars.compile(fs.readFileSync(path.join(__dirname, 'templates', 'carddav.plist'), 'utf-8'))
 };
 
 module.exports = {
-    sign: function(value, options, callback) {
+    sign(value, options, callback) {
         options = options || {};
 
-        var pem;
-        var der;
-        var params = {
+        let certs = [];
+        [].concat(options.cert || []).concat(options.ca || []).map(ca => {
+            ca = (ca || '').toString().trim().split('END CERTIFICATE-----');
+            ca.pop();
+            ca.forEach(ca => {
+                ca += 'END CERTIFICATE-----';
+                certs.push(ca.trim());
+            });
+            return ca;
+        });
 
+        certs = certs.reverse();
+
+        //let pem;
+        let der;
+        let params = {
             content: {
                 // the signed content needs to be a normal unicode string
                 str: (value || '').toString('utf-8')
             },
 
             // join ca certs with signer cert into single array and ensure the values are strings, not Buffer object
-            certs: [].concat(options.ca || []).concat(options.cert || []).map(function(cert) {
-                return (cert || '').toString();
-            }),
+            certs,
 
-            signerInfos: [{
+            signerInfos: [
+                {
+                    // sha256, sha512, sha384, sha224, sha1, md5, ripemd160
+                    hashAlg: options.hashAlg || 'sha256',
 
-                // sha256, sha512, sha384, sha224, sha1, md5, ripemd160
-                hashAlg: options.hashAlg || 'sha256',
+                    // If signingTime is true, add SigingTime signed attribute
+                    sAttr: options.signingTime
+                        ? {
+                            SigningTime: {}
+                        }
+                        : {},
 
-                // If signingTime is true, add SigingTime signed attribute
-                sAttr: options.signingTime ? {
-                    SigningTime: {}
-                } : {},
+                    signerCert: certs[certs.length - 1],
+                    signerPrvKey: (options.key || '').toString(),
 
-                signerCert: (options.cert || '').toString(),
-                signerPrvKey: (options.key || '').toString(),
-
-                // SHA256withRSA, SHA512withRSA, SHA384withRSA, SHA224withRSA, SHA1withRSA,MD5withRSA
-                // RIPEMD160withRSA, SHA256withECDSA, SHA512withECDSA, SHA384withECDSA, SHA224withECDSA, SHA1withECDSA
-                // SHA256withSA, SHA512withSA, SHA384withSA, SHA224withSA, SHA1withDSA
-                sigAlg: options.sigAlg || 'SHA256withRSA'
-            }]
+                    // SHA256withRSA, SHA512withRSA, SHA384withRSA, SHA224withRSA, SHA1withRSA,MD5withRSA
+                    // RIPEMD160withRSA, SHA256withECDSA, SHA512withECDSA, SHA384withECDSA, SHA224withECDSA, SHA1withECDSA
+                    // SHA256withSA, SHA512withSA, SHA384withSA, SHA224withSA, SHA1withDSA
+                    sigAlg: options.sigAlg || 'SHA256withRSA'
+                }
+            ]
         };
 
         try {
-            pem = jsrsasign.asn1.cms.CMSUtil.newSignedData(params).getPEM();
-            der = new Buffer(jsrsasign.KEYUTIL.getHexFromPEM(pem, 'CMS'), 'hex');
+            der = Buffer.from(jsrsasign.asn1.cms.CMSUtil.newSignedData(params).getContentInfoEncodedHex(), 'hex');
+            //console.log(jsrsasign.KEYUTIL);
+            //der = new Buffer(jsrsasign.KEYUTIL.getHexFromPEM(pem, 'CMS'), 'hex');
         } catch (E) {
-            return setImmediate(function() {
+            return setImmediate(() => {
                 callback(E);
             });
         }
 
-        return setImmediate(function() {
+        return setImmediate(() => {
             callback(null, der);
         });
     },
 
-    getEmailConfig: function(options, callback) {
-        var imap = options.imap || {};
-        var smtp = options.smtp || {};
+    getEmailConfig(options, callback) {
+        let imap = options.imap || {};
+        let smtp = options.smtp || {};
 
-        var data = {
+        let data = {
             emailAddress: options.emailAddress || 'admin@localhost',
 
             organization: options.organization || false,
@@ -99,7 +113,7 @@ module.exports = {
             plistUuid: options.plistUuid || uuid.v4()
         };
 
-        if(callback) {
+        if (callback) {
             callback(null, templates.imap(data));
             return;
         }
@@ -107,10 +121,10 @@ module.exports = {
         return templates.imap(data);
     },
 
-    getSignedEmailConfig: function(options, callback) {
+    getSignedEmailConfig(options, callback) {
         options = options || {};
 
-        var plist;
+        let plist;
 
         try {
             plist = module.exports.getEmailConfig(options);
@@ -121,10 +135,10 @@ module.exports = {
         return module.exports.sign(plist, options.keys, callback);
     },
 
-    getCardDAVConfig: function(options, callback) {
-        var dav = options.dav || {};
+    getCardDAVConfig(options, callback) {
+        let dav = options.dav || {};
 
-        var data = {
+        let data = {
             emailAddress: options.emailAddress || 'admin@localhost',
 
             organization: options.organization || false,
@@ -149,7 +163,7 @@ module.exports = {
             plistUuid: options.plistUuid || uuid.v4()
         };
 
-        if(callback) {
+        if (callback) {
             callback(null, templates.carddav(data));
             return;
         }
@@ -157,10 +171,10 @@ module.exports = {
         return templates.carddav(data);
     },
 
-    getSignedCardDAVConfig: function(options, callback) {
+    getSignedCardDAVConfig(options, callback) {
         options = options || {};
 
-        var plist;
+        let plist;
 
         try {
             plist = module.exports.getCardDAVConfig(options);

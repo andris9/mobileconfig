@@ -1,35 +1,35 @@
 {
-  "name": "mobileconfig",
-  "version": "1.0.1",
-  "description": "Create and sign iOS mobileconfig configuration files",
-  "main": "index.js",
-  "scripts": {
-    "test": "grunt"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/andris9/mobileconfig.git"
-  },
-  "keywords": [
-    "RFC5652",
-    "SignedData"
-  ],
-  "author": "Andris Reinman",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/andris9/mobileconfig/issues"
-  },
-  "homepage": "https://github.com/andris9/mobileconfig#readme",
-  "dependencies": {
-    "handlebars": "^3.0.3",
-    "jsrsasign": "^4.8.4",
-    "uuid": "^2.0.1"
-  },
-  "devDependencies": {
-    "chai": "~3.2.0",
-    "grunt": "~0.4.5",
-    "grunt-contrib-jshint": "~0.11.2",
-    "grunt-mocha-test": "~0.12.7",
-    "plist": "^1.1.0"
-  }
+    "name": "mobileconfig",
+    "version": "2.0.0",
+    "description": "Create and sign iOS mobileconfig configuration files",
+    "main": "index.js",
+    "scripts": {
+        "test": "grunt"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/andris9/mobileconfig.git"
+    },
+    "keywords": ["RFC5652", "SignedData"],
+    "author": "Andris Reinman",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/andris9/mobileconfig/issues"
+    },
+    "homepage": "https://github.com/andris9/mobileconfig#readme",
+    "dependencies": {
+        "handlebars": "^4.0.10",
+        "jsrsasign": "^8.0.3",
+        "uuid": "^3.1.0"
+    },
+    "devDependencies": {
+        "chai": "~4.1.0",
+        "eslint-config-nodemailer": "^1.2.0",
+        "grunt": "~1.0.1",
+        "grunt-cli": "^1.2.0",
+        "grunt-eslint": "^20.0.0",
+        "grunt-mocha-test": "~0.13.2",
+        "mocha": "^3.4.2",
+        "plist": "^2.1.0"
+    }
 }

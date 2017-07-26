@@ -111,7 +111,8 @@ describe('mobileconfig unit tests', () => {
                         PayloadVersion: 1,
                         PreventAppSheet: false,
                         PreventMove: false,
-                        SMIMEEnabled: false
+                        SMIMEEnabled: false,
+                        allowMailDrop: true
                     }
                 ],
                 PayloadDescription: 'Install this profile to auto configure your Gmail account',

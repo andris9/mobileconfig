@@ -13,6 +13,11 @@
         <key>EmailAccountType</key>
         <string>EmailTypeIMAP</string>
 
+        {{#if emailAccountName}}
+            <key>EmailAccountName</key>
+            <string>{{emailAccountName}}</string>
+        {{/if}}
+
         <key>EmailAddress</key>
         <string>{{emailAddress}}</string>
 
@@ -98,6 +103,10 @@
 
         <key>SMIMEEnabled</key>
         <false/>
+
+        <key>allowMailDrop</key>
+        <true/>
+
       </dict>
     </array>
 

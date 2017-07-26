@@ -93,6 +93,8 @@ module.exports = {
             accountName: options.accountName || 'IMAP Account',
             accountDescription: options.accountDescription || false,
 
+            emailAccountName: options.emailAccountName || false,
+
             imap: {
                 hostname: imap.hostname || 'localhost',
                 port: imap.port || (imap.secure ? 993 : 143),

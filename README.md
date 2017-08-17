@@ -75,6 +75,70 @@ Where
       * **password** is the password for the account
   * **callback** (*err*, *data*) is the callback function to run once the configuration is generated. *err* is an Error object that is returned if an error occurs. *data* is the signed DER file as Buffer object, store it as *name.mobileconfig* to use
 
+### Generate and sign any configuration
+
+Generate and sign any valid mobileconfig configuration object. See [ConfigurationProfile reference](https://developer.apple.com/library/content/featuredarticles/iPhoneConfigurationProfileRef/Introduction/Introduction.html) for details.
+
+```javascript
+mobileconfig.getSignedConfig(plistData, keys, callback)
+```
+
+Where
+
+  * **plistData** is an object of plist fields, see below for an example
+  * **keys** includes the key and the certificate for signing the configuration file. See [signing configuration](#signing-configuration) for details of this object
+  * **callback** (*err*, *data*) is the callback function to run once the configuration is generated. *err* is an Error object that is returned if an error occurs. *data* is the signed DER file as Buffer object, store it as *name.mobileconfig* to use
+
+**Example**
+
+This example demonstrates generating and signing a profile file for an IMAP account.
+
+```javascript
+mobileconfig.getSignedConfig([
+    PayloadType: 'Configuration',
+    PayloadVersion: 1,
+    PayloadIdentifier: 'com.my.company',
+    PayloadUUID: uuid.v4(),
+    PayloadDisplayName: 'My Gmail Account',
+    PayloadDescription: 'Install this profile to auto configure your email account',
+    PayloadOrganization: 'My Company',
+
+    PayloadContent: {
+        PayloadType: 'com.apple.mail.managed',
+        PayloadVersion: 1,
+        PayloadIdentifier: 'com.my.company',
+        PayloadUUID: uuid.v4(),
+        PayloadDisplayName: 'IMAP Config',
+        PayloadDescription: 'Configures email account',
+        PayloadOrganization: 'My Company',
+
+        EmailAccountDescription: 'Configure your email account',
+        EmailAccountName: 'John Smith',
+        EmailAccountType: 'EmailTypeIMAP',
+        EmailAddress: 'my-email-address@gmail.com',
+        IncomingMailServerAuthentication: 'EmailAuthPassword',
+        IncomingMailServerHostName: 'imap.gmail.com',
+        IncomingMailServerPortNumber: 993,
+        IncomingMailServerUseSSL: true,
+        IncomingMailServerUsername: 'my-email-address@gmail.com',
+        IncomingPassword: 'verysecret',
+        OutgoingPasswordSameAsIncomingPassword: true,
+        OutgoingMailServerAuthentication: 'EmailAuthPassword',
+        OutgoingMailServerHostName: 'smtp.gmail.com',
+        OutgoingMailServerPortNumber: 587,
+        OutgoingMailServerUseSSL: false,
+        OutgoingMailServerUsername: 'my-email-address@gmail.com',
+        PreventMove: false,
+        PreventAppSheet: false,
+        SMIMEEnabled: false,
+        allowMailDrop: true
+    }
+], {
+    key: '-----BEGIN PRIVATE KEY-----...',
+    cert: '-----BEGIN CERTIFICATE-----...'
+}, callback)
+```
+
 ### Signing configuration
 
 Signing configuration object defines the signing process and includes the following properties

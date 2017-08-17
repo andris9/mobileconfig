@@ -27,3 +27,5 @@ build/Release
 node_modules
 
 *.mobileconfig
+.DS_Store
+package-lock.json

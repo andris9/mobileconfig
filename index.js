@@ -5,6 +5,7 @@ const fs = require('fs');
 const path = require('path');
 const Handlebars = require('handlebars');
 const uuid = require('uuid');
+const plist = require('plist');
 
 const templates = {
     imap: Handlebars.compile(fs.readFileSync(path.join(__dirname, 'templates', 'imap.plist'), 'utf-8')),
@@ -126,15 +127,15 @@ module.exports = {
     getSignedEmailConfig(options, callback) {
         options = options || {};
 
-        let plist;
+        let plistFile;
 
         try {
-            plist = module.exports.getEmailConfig(options);
+            plistFile = module.exports.getEmailConfig(options);
         } catch (E) {
             return callback(E);
         }
 
-        return module.exports.sign(plist, options.keys, callback);
+        return module.exports.sign(plistFile, options.keys, callback);
     },
 
     getCardDAVConfig(options, callback) {
@@ -176,14 +177,28 @@ module.exports = {
     getSignedCardDAVConfig(options, callback) {
         options = options || {};
 
-        let plist;
+        let plistFile;
 
         try {
-            plist = module.exports.getCardDAVConfig(options);
+            plistFile = module.exports.getCardDAVConfig(options);
         } catch (E) {
             return callback(E);
         }
 
-        return module.exports.sign(plist, options.keys, callback);
+        return module.exports.sign(plistFile, options.keys, callback);
+    },
+
+    getSignedConfig(plistData, keys, callback) {
+        plistData = plistData || [];
+
+        let plistFile;
+
+        try {
+            plistFile = plist.build(plistData);
+        } catch (E) {
+            return callback(E);
+        }
+
+        return module.exports.sign(plistFile, keys, callback);
     }
 };

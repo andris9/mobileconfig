@@ -6,7 +6,7 @@ Currently the module is able to auto configure and sign the following configurat
 
   * `com.apple.mail.managed ` eg. e-mail accounts (IMAP only at this point)
 
-Paylod signing is handled by [jsrsasign](http://kjur.github.io/jsrsasign/) which is a JavaScript only crypto library. This means that you can generate your *mobileconfig* files even in Windows.
+Payload signing is handled by [jsrsasign](http://kjur.github.io/jsrsasign/) which is a JavaScript only crypto library. This means that you can generate your *mobileconfig* files even in Windows.
 
 ## Usage
 

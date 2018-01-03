@@ -1,7 +1,7 @@
 'use strict';
 
 // Usage:
-// node caldav.js > contact.mobileconfig
+// node caldav.js > calendar.mobileconfig
 
 const mobileconfig = require('../index');
 const fs = require('fs');
@@ -11,7 +11,7 @@ mobileconfig.getCalDAVConfig(
         organization: 'My Company',
         identifier: 'com.my.company',
 
-        displayName: 'My Contacts',
+        displayName: 'My Calendar',
         displayDescription: 'Install this profile to auto configure your calendar',
 
         accountName: 'CalDAV Config',

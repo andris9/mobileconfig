@@ -75,6 +75,32 @@ Where
       * **password** is the password for the account
   * **callback** (*err*, *data*) is the callback function to run once the configuration is generated. *err* is an Error object that is returned if an error occurs. *data* is the signed DER file as Buffer object, store it as *name.mobileconfig* to use
 
+### Generate and sign CalDAV configuration
+
+Generate and sign CalDAV configuration with
+
+```javascript
+mobileconfig.getSignedCalDAVConfig(options, callback)
+```
+
+Where
+
+  * **options** is the options object for the account data with following properties
+    * **organization** is an optional name of the signing organization
+    * **identifier** is a reverse-DNS style identifier (eg. *com.example.myprofile*) for the profile
+    * **displayName** is an optional name for the profile
+    * **displayDescription** is a optional description for the profile
+    * **accountName** is an optional name for the CalDAV account
+    * **accountName** is an optional description for the CalDAV account
+    * **dav** is the dav server configuration with the following properties
+      * **hostname** is the hostname of the server
+      * **port** is an optional port number for the server (standard port is used if not set)
+      * **secure** is a boolean that indicates if the server should use TLS/SSL (true) or not (false) when connecting
+      * **principalurl** is an URL for the currently authenticated user’s principal resource on the server
+      * **username** is the username of the email account
+      * **password** is the password for the account
+  * **callback** (*err*, *data*) is the callback function to run once the configuration is generated. *err* is an Error object that is returned if an error occurs. *data* is the signed DER file as Buffer object, store it as *name.mobileconfig* to use
+
 ### Generate and sign any configuration
 
 Generate and sign any valid mobileconfig configuration object. See [ConfigurationProfile reference](https://developer.apple.com/library/content/featuredarticles/iPhoneConfigurationProfileRef/Introduction/Introduction.html) for details.
@@ -216,6 +242,10 @@ mobileconfig.getSignedEmailConfig(options, function(err, data){
 See full featured example [here](examples/imap.js)
 
 ## Changelog
+
+#### 1.0.2
+
+* CalDAV template
 
 #### 1.0.1
 

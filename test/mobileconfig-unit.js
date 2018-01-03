@@ -237,6 +237,64 @@ describe('mobileconfig unit tests', () => {
         });
     });
 
+    describe('#getCalDAVConfig', () => {
+        it('should generate valid plist', () => {
+            let options = {
+                organization: 'My Company',
+                identifier: 'com.my.company',
+
+                displayName: 'My Calendar',
+                displayDescription: 'Install this profile to auto configure your calendar',
+
+                accountName: 'CalDAV Config',
+                accountDescription: 'Configure your calendar',
+
+                dav: {
+                    hostname: 'http://localhost:8080',
+                    port: 8080,
+                    secure: false,
+                    principalurl: 'http://localhost:8080/dav/username',
+                    username: 'username@gmail.com',
+                    password: 'mypass'
+                },
+
+                contentUuid: 'abcdef',
+                plistUuid: 'ghijklmn'
+            };
+
+            let caldavConfig = plist.parse(mobileconfig.getCalDAVConfig(options));
+
+            expect(caldavConfig).to.deep.equal({
+                PayloadContent: [
+                    {
+                        CalDAVAccountDescription: 'Configure your calendar',
+                        CalDAVPrincipalURL: 'http://localhost:8080/dav/username',
+                        CalDAVHostName: 'http://localhost:8080',
+                        CalDAVPort: 8080,
+                        CalDAVUseSSL: false,
+                        CalDAVUsername: 'username@gmail.com',
+                        CalDAVPassword: 'mypass',
+                        PayloadDescription: 'username@gmail.com calendar events',
+                        PayloadDisplayName: 'username@gmail.com calendar events',
+                        PayloadIdentifier: 'com.my.company',
+                        PayloadOrganization: 'My Company',
+                        PayloadType: 'com.apple.caldav.account',
+                        PayloadUUID: 'abcdef',
+                        PayloadVersion: 1
+                    }
+                ],
+                PayloadDescription: 'Install this profile to auto configure your calendar',
+                PayloadDisplayName: 'My Calendar',
+                PayloadIdentifier: 'com.my.company',
+                PayloadOrganization: 'My Company',
+                PayloadRemovalDisallowed: false,
+                PayloadType: 'Configuration',
+                PayloadUUID: 'ghijklmn',
+                PayloadVersion: 1
+            });
+        });
+    });
+
     describe('#getSignedEmailConfig', () => {
         it('should not return an error', done => {
             let options = {

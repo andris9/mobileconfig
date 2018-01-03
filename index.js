@@ -9,7 +9,8 @@ const plist = require('plist');
 
 const templates = {
     imap: Handlebars.compile(fs.readFileSync(path.join(__dirname, 'templates', 'imap.plist'), 'utf-8')),
-    carddav: Handlebars.compile(fs.readFileSync(path.join(__dirname, 'templates', 'carddav.plist'), 'utf-8'))
+    carddav: Handlebars.compile(fs.readFileSync(path.join(__dirname, 'templates', 'carddav.plist'), 'utf-8')),
+    caldav: Handlebars.compile(fs.readFileSync(path.join(__dirname, 'templates', 'caldav.plist'), 'utf-8'))
 };
 
 module.exports = {
@@ -181,6 +182,56 @@ module.exports = {
 
         try {
             plistFile = module.exports.getCardDAVConfig(options);
+        } catch (E) {
+            return callback(E);
+        }
+
+        return module.exports.sign(plistFile, options.keys, callback);
+    },
+
+    getCalDAVConfig(options, callback) {
+        let dav = options.dav || {};
+
+        let data = {
+            emailAddress: options.emailAddress || 'admin@localhost',
+
+            organization: options.organization || false,
+            identifier: options.identifier || 'com.kreata.anonymous',
+
+            displayName: options.displayName || 'Calendar Account',
+            displayDescription: options.displayDescription,
+
+            accountName: options.accountName || 'CalDAV Account',
+            accountDescription: options.accountDescription || false,
+
+            dav: {
+                hostname: dav.hostname || 'localhost',
+                port: dav.port || (dav.secure ? 443 : 80),
+                principalurl: dav.principalurl || '',
+                secure: dav.hasOwnProperty('secure') ? !!dav.secure : dav.port === 80,
+                username: dav.username || options.emailAddress || 'anonymous',
+                password: dav.password || ''
+            },
+
+            contentUuid: options.contentUuid || uuid.v4(),
+            plistUuid: options.plistUuid || uuid.v4()
+        };
+
+        if (callback) {
+            callback(null, templates.caldav(data));
+            return;
+        }
+
+        return templates.caldav(data);
+    },
+
+    getSignedCalDAVConfig(options, callback) {
+        options = options || {};
+
+        let plistFile;
+
+        try {
+            plistFile = module.exports.getCalDAVConfig(options);
         } catch (E) {
             return callback(E);
         }

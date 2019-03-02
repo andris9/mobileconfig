@@ -33,7 +33,7 @@ Where
     * **displayName** is an optional name for the profile
     * **displayDescription** is a optional description for the profile
     * **accountName** is an optional name for the email account
-    * **accountName** is an optional description for the email account
+    * **accountDescription** is an optional description for the email account
     * **imap** is the incoming IMAP configuration data with the following properties
       * **hostname** is the hostname of the server
       * **port** is an optional port number for the server (standard port is used if not set)
@@ -65,7 +65,7 @@ Where
     * **displayName** is an optional name for the profile
     * **displayDescription** is a optional description for the profile
     * **accountName** is an optional name for the CardDAV account
-    * **accountName** is an optional description for the CardDAV account
+    * **accountDescription** is an optional description for the CardDAV account
     * **dav** is the dav server configuration with the following properties
       * **hostname** is the hostname of the server
       * **port** is an optional port number for the server (standard port is used if not set)
@@ -91,7 +91,7 @@ Where
     * **displayName** is an optional name for the profile
     * **displayDescription** is a optional description for the profile
     * **accountName** is an optional name for the CalDAV account
-    * **accountName** is an optional description for the CalDAV account
+    * **accountDescription** is an optional description for the CalDAV account
     * **dav** is the dav server configuration with the following properties
       * **hostname** is the hostname of the server
       * **port** is an optional port number for the server (standard port is used if not set)

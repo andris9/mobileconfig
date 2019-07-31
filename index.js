@@ -243,18 +243,18 @@ module.exports = {
     getWifiConfig(options, callback) {
         options = options || {};
         let data = {
-          displayName: options.displayName,
-          encryptionType: options.wifi.encryptionType,
-          ssid: options.wifi.ssid,
-          password: options.wifi.password,
-          organization: options.organization || false,
-          contentUuid: options.contentUuid || uuid.v4(),
-          plistUuid: options.plistUuid || uuid.v4()
+            displayName: options.displayName,
+            encryptionType: options.wifi.encryptionType,
+            ssid: options.wifi.ssid,
+            password: options.wifi.password,
+            organization: options.organization || false,
+            contentUuid: options.contentUuid || uuid.v4(),
+            plistUuid: options.plistUuid || uuid.v4()
         };
 
         if (callback) {
-          callback(null, templates.wifi(data));
-          return;
+            callback(null, templates.wifi(data));
+            return;
         }
 
         return templates.wifi(data);

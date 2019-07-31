@@ -266,9 +266,9 @@ module.exports = {
         let plistFile;
 
         try {
-          plistFile = module.exports.getWifiConfig(options);
+            plistFile = module.exports.getWifiConfig(options);
         } catch (E) {
-          return callback(E);
+            return callback(E);
         }
 
         return module.exports.sign(plistFile, options.keys, callback);

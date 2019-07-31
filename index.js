@@ -19,15 +19,21 @@ module.exports = {
         options = options || {};
 
         let certs = [];
-        [].concat(options.cert || []).concat(options.ca || []).map(ca => {
-            ca = (ca || '').toString().trim().split('END CERTIFICATE-----');
-            ca.pop();
-            ca.forEach(ca => {
-                ca += 'END CERTIFICATE-----';
-                certs.push(ca.trim());
+        []
+            .concat(options.cert || [])
+            .concat(options.ca || [])
+            .map(ca => {
+                ca = (ca || '')
+                    .toString()
+                    .trim()
+                    .split('END CERTIFICATE-----');
+                ca.pop();
+                ca.forEach(ca => {
+                    ca += 'END CERTIFICATE-----';
+                    certs.push(ca.trim());
+                });
+                return ca;
             });
-            return ca;
-        });
 
         certs = certs.reverse();
 
@@ -50,8 +56,8 @@ module.exports = {
                     // If signingTime is true, add SigingTime signed attribute
                     sAttr: options.signingTime
                         ? {
-                            SigningTime: {}
-                        }
+                              SigningTime: {}
+                          }
                         : {},
 
                     signerCert: certs[certs.length - 1],

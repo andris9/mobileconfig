@@ -101,6 +101,25 @@ Where
       * **password** is the password for the account
   * **callback** (*err*, *data*) is the callback function to run once the configuration is generated. *err* is an Error object that is returned if an error occurs. *data* is the signed DER file as Buffer object, store it as *name.mobileconfig* to use
 
+### Generate and sign WiFi configuration
+
+Generate and sign WiFi configuration with
+```javascript
+mobileconfig.getSignedWifiConfig(options, callback)
+```
+
+Where
+
+  * **options** is the options object for the account data with following properties
+    * **organization** is an optional name of the signing organization
+    * **displayName** is an optional name for the profile
+    * **wifi** is the required wifi configuration with the following properties
+      * **encryptionType** encryption type of the wifi network (e.g WPA)
+      * **ssid** wifi network ssid
+      * **password** string password for the wifi network
+  * **keys** includes the key and the certificate for signing the configuration file. See [signing configuration](#signing-configuration) for details of this object
+  * **callback** (*err*, *data*) is the callback function to run once the configuration is generated.
+
 ### Generate and sign any configuration
 
 Generate and sign any valid mobileconfig configuration object. See [ConfigurationProfile reference](https://developer.apple.com/library/content/featuredarticles/iPhoneConfigurationProfileRef/Introduction/Introduction.html) for details.
@@ -242,6 +261,8 @@ mobileconfig.getSignedEmailConfig(options, function(err, data){
 See full featured example [here](examples/imap.js)
 
 ## Changelog
+#### 1.0.3
+* WiFi template
 
 #### 1.0.2
 

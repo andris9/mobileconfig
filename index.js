@@ -10,7 +10,8 @@ const plist = require('plist');
 const templates = {
     imap: Handlebars.compile(fs.readFileSync(path.join(__dirname, 'templates', 'imap.plist'), 'utf-8')),
     carddav: Handlebars.compile(fs.readFileSync(path.join(__dirname, 'templates', 'carddav.plist'), 'utf-8')),
-    caldav: Handlebars.compile(fs.readFileSync(path.join(__dirname, 'templates', 'caldav.plist'), 'utf-8'))
+    caldav: Handlebars.compile(fs.readFileSync(path.join(__dirname, 'templates', 'caldav.plist'), 'utf-8')),
+    wifi: Handlebars.compile(fs.readFileSync(path.join(__dirname, 'templates', 'wifi.plist'), 'utf-8'))
 };
 
 module.exports = {
@@ -234,6 +235,40 @@ module.exports = {
             plistFile = module.exports.getCalDAVConfig(options);
         } catch (E) {
             return callback(E);
+        }
+
+        return module.exports.sign(plistFile, options.keys, callback);
+    },
+
+    getWifiConfig(options, callback) {
+        options = options || {};
+        let data = {
+          displayName: options.displayName,
+          encryptionType: options.wifi.encryptionType,
+          ssid: options.wifi.ssid,
+          password: options.wifi.password,
+          organization: options.organization || false,
+          contentUuid: options.contentUuid || uuid.v4(),
+          plistUuid: options.plistUuid || uuid.v4()
+        };
+
+        if (callback) {
+          callback(null, templates.wifi(data));
+          return;
+        }
+
+        return templates.wifi(data);
+    },
+
+    getSignedWifiConfig(options, callback) {
+        options = options || {};
+
+        let plistFile;
+
+        try {
+          plistFile = module.exports.getWifiConfig(options);
+        } catch (E) {
+          return callback(E);
         }
 
         return module.exports.sign(plistFile, options.keys, callback);

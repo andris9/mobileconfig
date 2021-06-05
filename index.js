@@ -23,10 +23,7 @@ module.exports = {
             .concat(options.cert || [])
             .concat(options.ca || [])
             .map(ca => {
-                ca = (ca || '')
-                    .toString()
-                    .trim()
-                    .split('END CERTIFICATE-----');
+                ca = (ca || '').toString().trim().split('END CERTIFICATE-----');
                 ca.pop();
                 ca.forEach(ca => {
                     ca += 'END CERTIFICATE-----';

@@ -22,7 +22,7 @@
     "homepage": "https://github.com/andris9/mobileconfig#readme",
     "dependencies": {
         "handlebars": "4.7.7",
-        "jsrsasign": "9.1.9",
+        "jsrsasign": "11.0.0",
         "plist": "3.0.2",
         "uuid": "8.3.2"
     },
